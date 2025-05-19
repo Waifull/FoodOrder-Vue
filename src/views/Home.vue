@@ -8,12 +8,12 @@
           <h2>Best <strong>Seller</strong></h2>
         </div>
         <div class="col">
-          <router-link to="/foods" class="btn btn-success float-right"><b-icon-eye></b-icon-eye> Show more</router-link>
+          <router-link to="/foods" class="btn btn-success float-right"><b-icon-eye></b-icon-eye> Show More</router-link>
         </div>
       </div>
 
 
-      <div class="row mb-3">
+      <div class="row mb-4">
         <div class="col-md-3 mt-4" v-for="product in products" :key="product.id">
           <CardProduct :product="product"/>
         </div>

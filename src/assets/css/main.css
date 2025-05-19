@@ -14,3 +14,16 @@
 .badge-success{
     background-color: #4EB883;
 }
+
+.card-product {
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+}
+
+.card-img-top {
+   border-top-right-radius: 15px;
+   border-top-left-radius: 15px;
+}

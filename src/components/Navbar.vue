@@ -19,7 +19,7 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/cart">
             Keranjang
-            <b-icon-cart></b-icon-cart>
+            <b-icon-bag></b-icon-bag>
             <span class="badge badge-success ml-2">0</span>
             </router-link>
           </li>
