@@ -2,7 +2,6 @@
   <div class="food-detail">
     <Navbar />
     <div class="container">
-
       <!-- Breadcrumb -->
       <div class="row mt-4">
         <div class="col">
@@ -22,24 +21,28 @@
 
       <div class="row mt-3">
         <div class="col-md-6">
-          <img :src="require(`../assets/images/${product.gambar}`)" alt="" class="img-fluid shadow">
+          <img :src="require(`../assets/images/${product.gambar}`)" alt="" class="img-fluid shadow" />
         </div>
         <div class="col-md-6">
-          <h2><strong>{{ product.nama }}</strong></h2>
-          <hr>
+          <h2>
+            <strong>{{ product.nama }}</strong>
+          </h2>
+          <hr />
           <p class="card-text">{{ product.deskripsi }}</p>
-          <h4>Harga: <strong>Rp {{ product.harga }}</strong></h4>
-          <form action="" class="mt-3">
+          <h4>
+            Harga: <strong>Rp {{ product.harga }}</strong>
+          </h4>
+          <form action="" class="mt-3" v-on:submit.prevent>
             <div class="form-group">
               <label for="jumlah_pemesanan">Jumlah Pesanan</label>
-              <input type="number" class="form-control">
+              <input type="number" class="form-control" v-model="pesanan.jumlah_pemesanan" />
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
-              <textarea name="" id="" placeholder="Keterangan tambahan (opsional)" class="form-control"></textarea>
+              <textarea name="" id="" placeholder="Keterangan tambahan (opsional)" class="form-control" v-model="pesanan.keterangan"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-success"><b-icon-cart></b-icon-cart> Pesan</button>
+            <button @click="pemesanan" type="submit" class="btn btn-success"><b-icon-cart></b-icon-cart> Pesan</button>
           </form>
         </div>
       </div>
@@ -50,6 +53,7 @@
 <script>
 import Navbar from '@/components/Navbar.vue';
 import axios from 'axios';
+
 export default {
   name: 'FoodDetailView',
   components: {
@@ -57,13 +61,38 @@ export default {
   },
   data() {
     return {
-      product: []
-    }
+      product: {},
+      pesanan: {},
+    };
   },
   methods: {
     setProduct(data) {
-      this.product = data
-    }
+      this.product = data;
+    },
+    pemesanan() {
+      if (this.pesanan.jumlah_pemesanan) {
+        this.pesanan.products = this.product;
+        axios
+          .post('http://localhost:3000/keranjangs', this.pesanan)
+          .then(() => {
+            this.$router.push({path: "/cart"})
+            this.$toast.success('Berhasil Masuk Keranjang', {
+              type: 'success',
+              position: 'top-right',
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        this.$toast.error('Jumlah Pesanan Harus diisi', {
+          type: 'error',
+          position: 'top-right',
+          duration: 3000,
+          dismissible: true,
+        });
+      }
+    },
   },
   mounted() {
     axios

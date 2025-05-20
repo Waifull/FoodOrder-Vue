@@ -18,9 +18,9 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link class="nav-link" to="/cart">
-            Keranjang
-            <b-icon-bag></b-icon-bag>
-            <span class="badge badge-success ml-2">0</span>
+              Keranjang
+              <b-icon-bag></b-icon-bag>
+              <span class="badge badge-success ml-2">{{ jumlah_pesanan.length }}</span>
             </router-link>
           </li>
         </ul>
@@ -30,8 +30,25 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'NavbarComponent',
+  data() {
+    return {
+      jumlah_pesanan: [],
+    };
+  },
+  methods: {
+    setJumlah(data) {
+      this.jumlah_pesanan = data;
+    },
+  },
+  mounted() {
+    axios
+      .get('http://localhost:3000/keranjangs')
+      .then((response) => this.setJumlah(response.data))
+      .catch((error) => console.log(error));
+  },
 };
 </script>
 
