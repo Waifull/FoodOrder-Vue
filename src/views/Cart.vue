@@ -1,6 +1,6 @@
 <template>
   <div class="cart">
-    <Navbar />
+    <Navbar :updateCart="keranjangs"/>
     <div class="container">
       <!-- Breadcrumb -->
       <div class="row mt-4">
@@ -56,7 +56,7 @@
                     <strong>Rp {{ formatRupiah(keranjang.products.harga * keranjang.jumlah_pemesanan) }}</strong>
                   </td>
                   <td align="center" class="text-danger">
-                    <b-icon-trash></b-icon-trash>
+                    <b-icon-trash @click="deleteCart(keranjang.id)"></b-icon-trash>
                   </td>
                 </tr>
 
@@ -64,9 +64,10 @@
                   <td colspan="6" align="right">
                     <strong>Total Harga:</strong>
                   </td>
-                  <td colspan="2" align="right">
+                  <td align="right">
                     <strong>Rp {{ formatRupiah(totalHarga) }}</strong>
                   </td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -99,6 +100,25 @@ export default {
       if (!angka) return '0';
       return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
+    deleteCart(id) {
+      axios
+        .delete('http://localhost:3000/keranjangs/' + id)
+        .then(() => {
+          this.$toast.error('Berhasil Hapus Pesanan', {
+            type: 'error',
+            position: 'top-right',
+            duration: 3000,
+            dismissible: true,
+          });
+
+          // Update Cart Data
+          axios
+            .get('http://localhost:3000/keranjangs')
+            .then((response) => this.setKeranjangs(response.data))
+            .catch((error) => console.log(error));
+        })
+        .catch((error) => console.log(error));
+    },
   },
   mounted() {
     axios
@@ -109,7 +129,7 @@ export default {
   computed: {
     totalHarga() {
       return this.keranjangs.reduce((total, item) => {
-        return total + (item.products.harga * item.jumlah_pemesanan);
+        return total + item.products.harga * item.jumlah_pemesanan;
       }, 0);
     },
   },
