@@ -30,7 +30,7 @@
           <hr />
           <p class="card-text">{{ product.deskripsi }}</p>
           <h4>
-            Harga: <strong>Rp {{ product.harga }}</strong>
+            Harga: <strong>Rp {{ formatRupiah(product.harga) }}</strong>
           </h4>
           <form action="" class="mt-3" v-on:submit.prevent>
             <div class="form-group">
@@ -69,13 +69,17 @@ export default {
     setProduct(data) {
       this.product = data;
     },
+    formatRupiah(angka) {
+      if (!angka) return '0';
+      return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    },
     pemesanan() {
       if (this.pesanan.jumlah_pemesanan) {
         this.pesanan.products = this.product;
         axios
           .post('http://localhost:3000/keranjangs', this.pesanan)
           .then(() => {
-            this.$router.push({path: "/cart"})
+            this.$router.push({ path: '/cart' });
             this.$toast.success('Berhasil Masuk Keranjang', {
               type: 'success',
               position: 'top-right',
@@ -83,7 +87,7 @@ export default {
               dismissible: true,
             });
           })
-          .catch((err) => console.log(err));
+          .catch((error) => console.log(error));
       } else {
         this.$toast.error('Jumlah Pesanan Harus diisi', {
           type: 'error',
