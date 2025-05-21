@@ -1,6 +1,6 @@
 <template>
   <div class="cart">
-    <Navbar :updateCart="keranjangs"/>
+    <Navbar :updateCart="keranjangs" />
     <div class="container">
       <!-- Breadcrumb -->
       <div class="row mt-4">
@@ -74,6 +74,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Form Checkout -->
+      <div class="row justify-content-end">
+        <div class="col-md-4">
+          <form action="" class="mt-3" v-on:submit.prevent>
+            <div class="form-group">
+              <label for="nama">Nama :</label>
+              <input type="text" class="form-control" v-model="pesanan.nama" />
+            </div>
+            <div class="form-group">
+              <label for="noMeja">Nomor Meja :</label>
+              <input type="text" class="form-control" v-model="pesanan.noMeja" />
+            </div>
+
+            <button @click="checkout" type="submit" class="btn btn-success float-right"><b-icon-cart></b-icon-cart> Pesan</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -90,6 +108,7 @@ export default {
   data() {
     return {
       keranjangs: [],
+      pesanan: {},
     };
   },
   methods: {
@@ -118,6 +137,34 @@ export default {
             .catch((error) => console.log(error));
         })
         .catch((error) => console.log(error));
+    },
+    checkout() {
+      if (this.pesanan.nama && this.pesanan.noMeja) {
+        this.pesanan.keranjangs = this.keranjangs;
+        axios
+          .post('http://localhost:3000/pesanans', this.pesanan)
+          .then(() => {
+            // Delete All Item on Cart
+            this.keranjangs.map(function (item) {
+              return axios.delete('http://localhost:3000/keranjangs/' + item.id).catch((error) => console.log(error));
+            });
+            this.$router.push({ path: '/order-success' });
+            this.$toast.success('Berhasil Membuat Pesanan', {
+              type: 'success',
+              position: 'top-right',
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((error) => console.log(error));
+      } else {
+        this.$toast.error('Nama dan Nomor Meja Harus diisi', {
+          type: 'error',
+          position: 'top-right',
+          duration: 3000,
+          dismissible: true,
+        });
+      }
     },
   },
   mounted() {
